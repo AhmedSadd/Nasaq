@@ -1,0 +1,104 @@
+# Nasaq Project Tasks
+
+## Phase 1: Foundation & Environment Setup
+- [ ] **1.1 Repository Initialization**
+    - [x] 1.1.1 Create Vite project (React + TS) `npm create vite` <!-- id: 0 -->
+    - [x] 1.1.2 Cleanup boilerplate (CSS, assets) <!-- id: 1 -->
+    - [x] 1.1.3 Configure path aliases (`@/`) in `tsconfig` and `vite.config` <!-- id: 2 -->
+    - [x] 1.1.4 Initialize Git and `.gitignore` <!-- id: 3 -->
+    - [x] 1.1.5 Setup PWA (`vite-plugin-pwa`, `manifest.json`) <!-- id: 4 -->
+- [ ] **1.2 Code Quality Standards**
+    - [x] 1.2.1 Setup ESLint (strict rules) <!-- id: 5 -->
+    - [x] 1.2.2 Setup Prettier (single quotes, trailing commas) <!-- id: 6 -->
+    - [x] 1.2.3 Setup Husky & lint-staged <!-- id: 7 -->
+    - [x] 1.2.4 Create `.editorconfig` <!-- id: 8 -->
+- [ ] **1.3 UI Foundation**
+    - [x] 1.3.1 Install Tailwind CSS, PostCSS, Autoprefixer <!-- id: 9 -->
+    - [x] 1.3.2 Configure `tailwind.config.js` (Dark mode, Colors, Fonts) <!-- id: 10 -->
+    - [x] 1.3.3 Initialize Shadcn UI <!-- id: 11 -->
+    - [x] 1.3.4 Install `lucide-react` <!-- id: 12 -->
+- [ ] **1.4 State Architecture**
+    - [x] 1.4.1 Install `zustand` <!-- id: 13 -->
+    - [x] 1.4.2 Design initial Store (`useAppStore`, slices) <!-- id: 14 -->
+    - [x] 1.4.3 Setup DevTools Middleware <!-- id: 15 -->
+
+## Phase 2: UI/UX Layout Phase
+- [ ] **2.1 Main Layout**
+    - [x] 2.1.1 Install `react-resizable-panels` <!-- id: 16 -->
+    - [x] 2.1.2 Build Layout Structure (Sidebar, Editor, Preview) <!-- id: 17 -->
+    - [x] 2.1.3 Add Resize Handles <!-- id: 18 -->
+    - [x] 2.1.4 Implement layout persistence <!-- id: 19 -->
+- [ ] **2.2 Theming System**
+    - [x] 2.2.1 Install `next-themes` <!-- id: 20 -->
+    - [x] 2.2.2 Create `ThemeToggle` component <!-- id: 21 -->
+    - [x] 2.2.3 Fix FOUC <!-- id: 22 -->
+    - [x] 2.2.4 Style Scrollbars <!-- id: 23 -->
+- [x] **2.3 Shared Components**
+    - [x] 2.3.1 Build base Shadcn components (Button, Dialog, etc.) <!-- id: 24 -->
+    - [ ] 2.3.2 Customize `Toast` <!-- id: 25 --> (Deferred)
+    - [x] 2.3.3 Design Empty States <!-- id: 26 --> (No file open state)
+    - [x] 2.3.4 Implement Editor Controls (`DirectionToggleGroup`) <!-- id: 27 -->
+
+## Phase 3: Core Editor Engine
+- [ ] **3.1 CodeMirror Integration**
+    - [x] 3.1.1 Install CodeMirror packages <!-- id: 28 -->
+    - [x] 3.1.2 Create `EditorWrapper` <!-- id: 29 -->
+    - [x] 3.1.3 Enable GFM & Markdown <!-- id: 30 -->
+    - [x] 3.1.4 Apply Theme <!-- id: 31 -->
+- [ ] **3.2 Direction Logic Engine**
+    - [x] 3.2.1 Implement Reactive Architecture (Compartments) <!-- id: 32 -->
+    - [x] 3.2.2 Implement Forced Modes (RTL/LTR) <!-- id: 33 -->
+    - [x] 3.2.3 Implement Auto Mode (`AutoRTLPlugin`, Regex, optimization) <!-- id: 34 -->
+    - [x] 3.2.4 Tuning CSS & RTL Styling <!-- id: 35 -->
+- [ ] **3.3 Search & Replace**
+    - [x] 3.3.1 Enable Search extensions <!-- id: 36 -->
+    - [x] 3.3.2 Design `SearchPanel` Component <!-- id: 37 -->
+
+## Phase 4: File System & Data
+- [ ] **4.1 File System Adapter**
+    - [x] 4.1.1 Build `useFileSystem` Hook <!-- id: 38 -->
+    - [x] 4.1.2 Permission Handling (Implicit in hook) <!-- id: 39 -->
+- [ ] **4.2 File Operations (CRUD)**
+    - [x] 4.2.1 Read (Recursive Tree) <!-- id: 40 --> 
+    - [x] 4.2.4 Save (Native, `Ctrl+S`) <!-- id: 43 -->
+    - [x] 4.2.2 Create (Files/Folders) <!-- id: 41 -->
+    - [x] 4.2.3 Delete <!-- id: 42 -->
+- [ ] **4.3 Legacy & Backup**
+    - [ ] 4.3.1 Install `idb-keyval` <!-- id: 44 -->
+    - [ ] 4.3.2 Implement Fallback (Firefox) <!-- id: 45 -->
+    - [x] 4.3.3 Data Safety (`isDirty`, `beforeunload`) <!-- id: 46 -->
+
+## Phase 5: Advanced Preview
+- [x] **5.1 Markdown Rendering**
+    - [x] 5.1.1 Configure `react-markdown` <!-- id: 47 -->
+    - [x] 5.1.2 Integrate Plugins (`remark-gfm`, `rehype-highlight`, `rehype-slug`) <!-- id: 48 -->
+    - [ ] 5.1.3 Local Image Renderer (`useLocalImage`) <!-- id: 49 -->
+    - [x] 5.1.4 Create `MarkdownPreview` (Copy Button, Language Label) <!-- id: 50 -->
+- [x] **5.2 Mermaid Diagrams**
+    - [x] 5.2.1 Install `mermaid` <!-- id: 51 -->
+    - [x] 5.2.2 Create `MermaidBlock` component <!-- id: 52 -->
+- [ ] **5.3 Security**
+    - [ ] 5.3.1 Configure `rehype-sanitize` <!-- id: 53 -->
+- [x] **5.4 Sync Scroll**
+    - [x] Implement Sync Scroll Logic <!-- id: 54 -->
+    - [x] Bi-directional Sync (Editor <-> Preview) <!-- id: sync_bi -->
+
+## Phase 6: Productivity & UX Polish
+- [x] **6.1 Shortcuts Manager**
+    - [x] 6.1.1 Install `react-hotkeys-hook` <!-- id: 55 --> (Used native keydown for Ctrl+S, Ctrl+F)
+    - [x] 6.1.2 Define Shortcuts Map <!-- id: 56 --> (Save: Ctrl+S, Search: Ctrl+F)
+- [x] **6.2 Zen Mode**
+    - [x] 6.2.1 Implement Zen Mode State & UI <!-- id: 57 -->
+- [x] **6.3 Micro-Interactions**
+    - [x] 6.3.1 Add Loaders (Refresh Button) <!-- id: 58 -->
+    - [x] 6.3.2 Improve File Tree UI (Inline Create, CRUD) <!-- id: 59 -->
+
+## Phase 7: QA & Testing
+- [ ] **7.1 Unit Testing** <!-- id: 60 -->
+- [ ] **7.2 Integration Testing** <!-- id: 61 -->
+- [ ] **7.3 Manual Cross-Browser Testing** <!-- id: 62 -->
+
+## Phase 8: Deployment
+- [ ] **8.1 Build Config** <!-- id: 63 -->
+- [ ] **8.2 GitHub Pages Deployment** <!-- id: 64 -->
+- [ ] **8.3 Final Documentation** <!-- id: 65 --> end
