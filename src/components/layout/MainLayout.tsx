@@ -56,7 +56,7 @@ function EditorToolbar() {
     );
 
     return (
-        <div className="h-10 border-b flex items-center justify-between px-3 bg-card/30 backdrop-blur-sm shrink-0">
+        <div className="h-10 border-b flex items-center justify-between px-3 bg-card/40 backdrop-blur-md shrink-0 shadow-sm transition-all duration-300">
             <div className="flex items-center gap-1 overflow-hidden flex-1 group">
                 <FileText className="w-4 h-4 text-primary/70 shrink-0 mr-1" />
                 
@@ -192,12 +192,12 @@ export function MainLayout() {
     >
       {/* Top Header / Toolbar - hidden in Zen Mode */}
       {!isZenMode && (
-        <header className="h-12 border-b flex items-center justify-between px-4 shrink-0 bg-secondary/20 backdrop-blur-md">
-          <div className="flex items-center gap-3">
-             <div className="w-8 h-8 rounded-lg overflow-hidden border border-primary/20 bg-background/50 p-0.5 shadow-sm">
+        <header className="h-12 border-b flex items-center justify-between px-4 shrink-0 bg-background/80 backdrop-blur-xl z-50 shadow-premium transition-all duration-500">
+          <div className="flex items-center gap-3 group">
+             <div className="w-8 h-8 rounded-lg overflow-hidden border border-primary/20 bg-background/50 p-0.5 shadow-md animate-nasaq-pulse group-hover:scale-110 transition-transform duration-300">
                 <img src="./pwa-192x192.png" alt="Nasaq Logo" className="w-full h-full object-contain" />
              </div>
-             <span className="font-bold font-cairo text-lg text-primary tracking-wider">Nasaq</span>
+             <span className="font-bold font-cairo text-lg text-primary tracking-wider drop-shadow-sm select-none">Nasaq</span>
           </div>
           
           <div className="flex items-center gap-2">
@@ -220,11 +220,11 @@ export function MainLayout() {
       )}
 
       {/* Main Workspace */}
-      <main role="main" aria-label="Nasaq Editor Workspace" className="flex-1 overflow-hidden">
+      <main role="main" aria-label="Nasaq Editor Workspace" className="flex-1 overflow-hidden animate-nasaq-fade">
         <ResizablePanelGroup
           direction="horizontal"
           id="nasaq-layout-persistence"
-          className="h-full w-full"
+          className="h-full w-full bg-background/50"
         >
           {/* File Explorer - hidden in Zen Mode */}
           {!isZenMode && (

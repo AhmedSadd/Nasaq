@@ -30,28 +30,29 @@ export function StatusBar() {
   if (!currentFile) return null;
 
   return (
-    <div className="h-6 border-t bg-muted/30 flex items-center justify-between px-3 text-xs text-muted-foreground select-none shrink-0">
-      <div className="flex items-center gap-4">
-        <span className="flex items-center gap-1">
-          <FileText className="w-3 h-3" />
-          {stats.lines} سطر
+    <div className="h-7 border-t bg-background/50 backdrop-blur-lg flex items-center justify-between px-4 text-[10px] sm:text-xs text-muted-foreground select-none shrink-0 shadow-[0_-1px_3px_rgba(0,0,0,0.02)] transition-all duration-300">
+      <div className="flex items-center gap-6">
+        <span className="flex items-center gap-1.5 group cursor-default">
+          <FileText className="w-3 h-3 text-primary/50 group-hover:text-primary transition-colors" />
+          <span className="font-medium">{stats.lines}</span> أسطر
         </span>
-        <span className="flex items-center gap-1">
-          <Hash className="w-3 h-3" />
-          {stats.words} كلمة
+        <span className="flex items-center gap-1.5 group cursor-default">
+          <Hash className="w-3 h-3 text-primary/50 group-hover:text-primary transition-colors" />
+          <span className="font-medium">{stats.words}</span> كلمات
         </span>
-        <span className="flex items-center gap-1">
-          <Type className="w-3 h-3" />
-          {stats.chars} حرف
+        <span className="flex items-center gap-1.5 group cursor-default">
+          <Type className="w-3 h-3 text-primary/50 group-hover:text-primary transition-colors" />
+          <span className="font-medium">{stats.chars}</span> أحرف
         </span>
       </div>
       
-      <div className="flex items-center gap-3">
-        <span className="flex items-center gap-1">
-          <directionLabel.icon className="w-3 h-3" />
-          {directionLabel.label}
-        </span>
-        <span className="text-muted-foreground/60">UTF-8</span>
+      <div className="flex items-center gap-4">
+        <div className="bg-primary/5 px-2 py-0.5 rounded-full border border-primary/10 flex items-center gap-1.5 hover:bg-primary/10 transition-colors cursor-pointer">
+           <directionLabel.icon className="w-3 h-3" />
+           <span className="font-bold">{directionLabel.label}</span>
+        </div>
+        <div className="h-3 w-[1px] bg-muted-foreground/20 mx-1" />
+        <span className="text-muted-foreground/40 font-mono tracking-tight">UTF-8</span>
       </div>
     </div>
   );

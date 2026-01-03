@@ -141,8 +141,10 @@ export function FileTreeItem({ name, handle, path, parentHandle, onRefresh, coll
     <div className="pl-2">
       <div 
         className={cn(
-            "flex items-center gap-1 py-1 px-2 rounded-sm cursor-pointer hover:bg-muted/50 text-sm select-none group relative min-h-[28px]",
-            isActive && "bg-muted font-medium text-primary"
+            "flex items-center gap-2 py-1.5 px-3 rounded-lg cursor-pointer transition-all duration-300 select-none group relative min-h-[32px] my-0.5 mx-1",
+            isActive 
+              ? "bg-primary/10 text-primary shadow-[0_0_15px_-5px_hsl(var(--primary)/0.3)] font-semibold border border-primary/20" 
+              : "hover:bg-muted/40 text-muted-foreground/90 hover:text-foreground hover:translate-x-1"
         )}
         onClick={handleClick}
       >

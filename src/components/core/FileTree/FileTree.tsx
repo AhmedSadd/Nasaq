@@ -77,29 +77,26 @@ export function FileTree() {
   }
 
   return (
-    <div className="overflow-auto h-full p-2 flex flex-col">
-        <div className="mb-2 flex items-center justify-between px-2 gap-1 shrink-0 flex-wrap">
-            <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider truncate flex-1 min-w-[60px]" title={rootHandle.name}>
+    <div className="overflow-auto h-full p-2 flex flex-col animate-nasaq-fade">
+        <div className="mb-3 flex items-center justify-between px-2 gap-1 shrink-0 flex-wrap">
+            <span className="text-[10px] font-black text-muted-foreground/50 uppercase tracking-[0.2em] truncate flex-1 min-w-[60px] select-none" title={rootHandle.name}>
               {rootHandle.name}
             </span>
-            <div className="flex items-center gap-0.5">
-                <Button onClick={handleCreateFile} variant="ghost" size="icon" className="h-6 w-6" title="New File">
+            <div className="flex items-center gap-0.5 bg-muted/30 p-0.5 rounded-lg shadow-inner">
+                <Button onClick={handleCreateFile} variant="ghost" size="icon" className="h-6 w-6 rounded-md hover:bg-primary/10 transition-colors" title="New File">
                     <FilePlus className="w-3.5 h-3.5" />
                 </Button>
-                <Button onClick={handleCreateFolder} variant="ghost" size="icon" className="h-6 w-6" title="New Folder">
+                <Button onClick={handleCreateFolder} variant="ghost" size="icon" className="h-6 w-6 rounded-md hover:bg-primary/10 transition-colors" title="New Folder">
                     <FolderPlus className="w-3.5 h-3.5" />
                 </Button>
-                <Button onClick={expandAll} variant="ghost" size="icon" className="h-6 w-6" title="Expand All">
+                <Button onClick={expandAll} variant="ghost" size="icon" className="h-6 w-6 rounded-md hover:bg-primary/10 transition-colors" title="Expand All">
                     <ChevronsDown className="w-3.5 h-3.5" />
                 </Button>
-                <Button onClick={collapseAll} variant="ghost" size="icon" className="h-6 w-6" title="Collapse All">
+                <Button onClick={collapseAll} variant="ghost" size="icon" className="h-6 w-6 rounded-md hover:bg-primary/10 transition-colors" title="Collapse All">
                     <ChevronsUp className="w-3.5 h-3.5" />
                 </Button>
-                <Button onClick={refreshAction} variant="ghost" size="icon" className="h-6 w-6" title="Refresh">
+                <Button onClick={refreshAction} variant="ghost" size="icon" className="h-6 w-6 rounded-md hover:bg-primary/10 transition-colors" title="Refresh">
                     <RotateCcw className="w-3.5 h-3.5" />
-                </Button>
-                <Button onClick={openDirectory} variant="ghost" size="icon" className="h-6 w-6" title="Switch Folder">
-                    <FolderOpen className="w-3.5 h-3.5" />
                 </Button>
             </div>
         </div>

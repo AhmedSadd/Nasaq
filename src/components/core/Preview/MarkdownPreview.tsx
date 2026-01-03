@@ -243,22 +243,24 @@ export function MarkdownPreview() {
       )}
     <div 
       ref={previewRef}
-      className="flex-1 w-full overflow-auto p-6 prose prose-slate dark:prose-invert max-w-none scroll-smooth"
+      className="flex-1 w-full overflow-auto p-4 sm:p-8 lg:p-12 prose prose-slate dark:prose-invert max-w-none scroll-smooth animate-nasaq-fade"
       dir={dir}
       translate="no"
       onMouseEnter={() => { isScrollingByMeRef.current = true }}
       onMouseLeave={() => { isScrollingByMeRef.current = false }}
     >
-      <ReactMarkdown
-        remarkPlugins={[remarkGfm]}
-        rehypePlugins={[
-          rehypeTaskLines, // يضيف رقم السطر للفئة
-          rehypeRaw, 
-          [rehypeSanitize, sanitizeSchema],
-          rehypeHighlight, 
-          rehypeSlug
-        ]}
-        components={{
+      <div className="bg-card/40 backdrop-blur-md p-8 sm:p-12 rounded-3xl border shadow-premium transition-all duration-500 hover:shadow-2xl mx-auto max-w-5xl">
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
+          rehypePlugins={[
+            rehypeTaskLines,
+            rehypeRaw, 
+            [rehypeSanitize, sanitizeSchema],
+            rehypeHighlight, 
+            rehypeSlug
+          ]}
+          components={{
+            // ... existing components
           a: ({ ...props }) => (
             <a {...props} target="_blank" rel="noopener noreferrer" />
           ),
@@ -378,7 +380,8 @@ export function MarkdownPreview() {
         }}
       >
         {content || "# مرحباً! 👋\n\nابدأ الكتابة في المحرر لرؤية المعاينة هنا."}
-      </ReactMarkdown>
+        </ReactMarkdown>
+      </div>
     </div>
   </div>
   );
