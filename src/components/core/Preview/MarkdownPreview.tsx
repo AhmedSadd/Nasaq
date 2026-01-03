@@ -170,9 +170,7 @@ export function MarkdownPreview() {
   }, [content, currentFile, rootHandle]);
 
   const handleCheckboxAtLine = useCallback((lineNum: number, checked: boolean) => {
-    console.log(`[Checkbox Debug] Target Line: ${lineNum}, New Status: ${checked}`);
-    
-    // التعامل مع فواصل الأسطر المختلفة
+    // التنفيذ الفعلي بدون سجلات تشخيصية لقوة الأداء والنظافة
     const lines = content.split(/\r?\n/);
     const lineIndex = lineNum - 1;
     let targetIdx = -1;
@@ -193,17 +191,13 @@ export function MarkdownPreview() {
     }
 
     if (targetIdx !== -1) {
-      console.log(`[Checkbox Debug] Found task at content line ${targetIdx + 1}`);
       const line = lines[targetIdx];
       const newLine = line.replace(/\[([ xX])\]/, `[${checked ? 'x' : ' '}]`); // استبدال أول ظهور
       
       if (newLine !== line) {
         lines[targetIdx] = newLine;
         setContent(lines.join('\n'));
-        console.log(`[Checkbox Debug] Content updated at line ${targetIdx + 1}`);
       }
-    } else {
-        console.error(`[Checkbox Debug] ERROR: Could not find task pattern near line ${lineNum}`);
     }
   }, [content, setContent]);
 

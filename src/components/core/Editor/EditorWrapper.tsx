@@ -193,7 +193,6 @@ export function EditorWrapper() {
     if (content !== lastExternalContentRef.current && !isExternalUpdateRef.current) {
       const editorCurrentContent = viewRef.current?.state.doc.toString() || '';
       if (editorCurrentContent !== content) {
-        console.log(`[Editor Debug] External update detected. Syncing editor view.`);
         updateEditorContent(content);
       }
       lastExternalContentRef.current = content;
