@@ -187,6 +187,20 @@ export function EditorWrapper() {
     }
   }, [currentFile, content, updateEditorContent]);
 
+  // ========== [جديد] مزامنة المحرر مع التغييرات الخارجية (من المعاينة) ==========
+  const lastExternalContentRef = useRef<string>(content);
+  useEffect(() => {
+    // إذا تغير content في الـ Store ولم يكن التغيير من المحرر نفسه
+    if (content !== lastExternalContentRef.current && !isExternalUpdateRef.current) {
+      // التحقق من أن المحتوى الحالي للمحرر مختلف عن الجديد
+      const editorCurrentContent = viewRef.current?.state.doc.toString() || '';
+      if (editorCurrentContent !== content) {
+        updateEditorContent(content);
+      }
+      lastExternalContentRef.current = content;
+    }
+  }, [content, updateEditorContent]);
+
   // تحديث اتجاه النص تفاعلياً
   useEffect(() => {
     if (viewRef.current) {

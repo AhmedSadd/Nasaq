@@ -152,13 +152,15 @@ export function MarkdownPreview() {
 
   // ========== نهج جديد: تعديل المربع بناءً على ترتيبه ==========
   const handleCheckboxByIndex = useCallback((checkboxIndex: number, checked: boolean) => {
-    // نمط البحث عن مربعات المهام: - [ ] أو - [x] أو * [ ] إلخ
-    const checkboxPattern = /([-*+]\s+)\[([xX ])\]/g;
+    // نمط البحث عن مربعات المهام مع دعم المسافات البادئة:
+    // مسافات بادئة (اختياري) + علامة القائمة + مسافة + [ ] أو [x] أو [X]
+    const checkboxPattern = /^(\s*[-*+]\s+)\[([xX ])\]/gm;
     
     let currentIndex = 0;
     const newContent = content.replace(checkboxPattern, (match, prefix, _state) => {
       if (currentIndex === checkboxIndex) {
         currentIndex++;
+        // نحافظ على بادئة السطر الأصلية ونغير فقط حالة المربع
         return `${prefix}[${checked ? 'x' : ' '}]`;
       }
       currentIndex++;
