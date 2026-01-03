@@ -22,3 +22,15 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Project Specific
+.env
+.env.*
+docs/auto_generated/
+docs/ملف للتجربة.md
+docs/test-features.md
+docs/logo.jpg
+
+# OS
+.DS_Store
+Thumbs.db
