@@ -295,6 +295,13 @@ export function MarkdownPreview() {
                 src={displaySrc}
                 alt={alt}
                 className="max-w-full h-auto rounded-lg shadow-md my-4 border bg-muted/50 text-xs italic text-muted-foreground"
+                onError={(e) => {
+                    const img = e.currentTarget;
+                    // إذا فشل التحميل وكان المسار يحتوي على public/، نحاول بدونه (لحل مشكلة Flattening في Vite)
+                    if (img.src.includes('public/')) {
+                        img.src = img.src.replace('public/', '');
+                    }
+                }}
                 {...props}
               />
             );
