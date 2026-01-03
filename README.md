@@ -1,6 +1,7 @@
 <div align="center">
   <img src="./public/pwa-192x192.png" alt="Nasaq Logo" width="120" />
   <h1>Nasaq | نـسـق</h1>
+  <br>
   <p><b>محرر Markdown متطور يمنح نصوصك النظام والجمال</b></p>
   <p>
     <a href="https://AhmedSadd.github.io/Nasaq/">المعاينة المباشرة (Live Demo)</a> •

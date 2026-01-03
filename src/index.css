@@ -51,11 +51,90 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+  }
+
+  /* --- Nord Theme --- */
+  [data-theme='nord'] {
+    --background: 220 16% 22%;
+    --foreground: 218 28% 90%;
+    --card: 220 16% 22%;
+    --card-foreground: 218 28% 90%;
+    --popover: 220 16% 22%;
+    --popover-foreground: 218 28% 90%;
+    --primary: 193 43% 67%;
+    --primary-foreground: 220 16% 22%;
+    --secondary: 220 16% 28%;
+    --secondary-foreground: 218 28% 90%;
+    --muted: 220 16% 28%;
+    --muted-foreground: 217 19% 70%;
+    --accent: 220 16% 32%;
+    --accent-foreground: 218 28% 90%;
+    --border: 220 16% 32%;
+    --input: 220 16% 32%;
+    --ring: 193 43% 67%;
+  }
+
+  /* --- Dracula Theme --- */
+  [data-theme='dracula'] {
+    --background: 231 15% 18%;
+    --foreground: 60 30% 96%;
+    --card: 231 15% 18%;
+    --card-foreground: 60 30% 96%;
+    --popover: 231 15% 18%;
+    --popover-foreground: 60 30% 96%;
+    --primary: 326 100% 74%;
+    --primary-foreground: 231 15% 18%;
+    --secondary: 231 15% 25%;
+    --secondary-foreground: 60 30% 96%;
+    --muted: 231 15% 25%;
+    --muted-foreground: 225 27% 67%;
+    --accent: 250 100% 75%;
+    --accent-foreground: 231 15% 18%;
+    --border: 231 15% 30%;
+    --input: 231 15% 30%;
+    --ring: 326 100% 74%;
+  }
+
+  /* --- Catppuccin Theme --- */
+  [data-theme='catppuccin'] {
+    --background: 232 23% 18%;
+    --foreground: 226 64% 88%;
+    --card: 232 23% 18%;
+    --card-foreground: 226 64% 88%;
+    --popover: 232 23% 18%;
+    --popover-foreground: 226 64% 88%;
+    --primary: 267 84% 81%;
+    --primary-foreground: 232 23% 18%;
+    --secondary: 232 23% 25%;
+    --secondary-foreground: 226 64% 88%;
+    --muted: 232 23% 25%;
+    --muted-foreground: 228 14% 60%;
+    --accent: 203 92% 75%;
+    --accent-foreground: 232 23% 18%;
+    --border: 232 23% 30%;
+    --input: 232 23% 30%;
+    --ring: 267 84% 81%;
+  }
+
+  /* --- Rose Pine Theme --- */
+  [data-theme='rose-pine'] {
+    --background: 249 22% 12%;
+    --foreground: 245 50% 91%;
+    --card: 249 22% 12%;
+    --card-foreground: 245 50% 91%;
+    --popover: 249 22% 12%;
+    --popover-foreground: 245 50% 91%;
+    --primary: 343 35% 68%;
+    --primary-foreground: 249 22% 12%;
+    --secondary: 249 22% 18%;
+    --secondary-foreground: 245 50% 91%;
+    --muted: 249 22% 18%;
+    --muted-foreground: 248 12% 52%;
+    --accent: 35 100% 84%;
+    --accent-foreground: 249 22% 12%;
+    --border: 249 22% 25%;
+    --input: 249 22% 25%;
+    --ring: 343 35% 68%;
   }
 }
 

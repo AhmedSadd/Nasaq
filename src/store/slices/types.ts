@@ -10,12 +10,14 @@ export interface EditorSlice {
   setScrollRatio: (ratio: number) => void;
 }
 
+export type AppTheme = 'light' | 'dark' | 'system' | 'nord' | 'dracula' | 'catppuccin' | 'rose-pine';
+
 export interface SettingsSlice {
   directionMode: DirectionMode;
   toggleDirection: () => void;
   setDirection: (mode: DirectionMode) => void;
-  theme: 'light' | 'dark' | 'system';
-  setTheme: (theme: 'light' | 'dark' | 'system') => void;
+  theme: AppTheme;
+  setTheme: (theme: AppTheme) => void;
   isZenMode: boolean;
   toggleZenMode: () => void;
   // التمرير المتزامن
