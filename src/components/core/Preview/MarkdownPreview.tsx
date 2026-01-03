@@ -40,13 +40,32 @@ const sanitizeSchema = {
 }
 
 /**
- * Plugin بسيط لحفظ رقم السطر قبل أن يحذفه التطهير (Sanitize)
+ * Plugin يعمل في مرحلة Remark (Markdown AST)
+ * يقوم بحقن رقم السطر لكل عنصر قائمة يحتوي على مربع اختيار
  */
-const rehypePreserveLines = () => (tree: any) => {
+const remarkPreserveLines = () => (tree: any) => {
     const walk = (node: any) => {
-        if (node.type === 'element' && node.tagName === 'input' && node.properties?.type === 'checkbox') {
-            if (node.position?.start?.line) {
-                node.properties['data-line'] = node.position.start.line;
+        if (node.type === 'listItem' && node.checked !== null) {
+            if (!node.data) node.data = {};
+            if (!node.data.hProperties) node.data.hProperties = {};
+            node.data.hProperties['data-line'] = node.position?.start?.line;
+        }
+        if (node.children) node.children.forEach(walk);
+    };
+    walk(tree);
+};
+
+/**
+ * Plugin يعمل في مرحلة Rehype (HTML AST)
+ * يقوم بنقل data-line من الـ LI إلى الـ INPUT (checkbox)
+ */
+const rehypeTransferLineToInput = () => (tree: any) => {
+    const walk = (node: any) => {
+        if (node.type === 'element' && node.tagName === 'li' && node.properties?.['data-line']) {
+            const line = node.properties['data-line'];
+            const input = node.children?.find((c: any) => c.tagName === 'input' && c.properties?.type === 'checkbox');
+            if (input) {
+                input.properties['data-line'] = line;
             }
         }
         if (node.children) node.children.forEach(walk);
@@ -251,9 +270,9 @@ export function MarkdownPreview() {
       onMouseLeave={() => { isScrollingByMeRef.current = false }}
     >
       <ReactMarkdown
-        remarkPlugins={[remarkGfm]}
+        remarkPlugins={[remarkGfm, remarkPreserveLines]}
         rehypePlugins={[
-          rehypePreserveLines, // يحفظ السطر قبل التطهير
+          rehypeTransferLineToInput,
           rehypeRaw, 
           [rehypeSanitize, sanitizeSchema],
           rehypeHighlight, 
@@ -263,19 +282,22 @@ export function MarkdownPreview() {
           a: ({ ...props }) => (
             <a {...props} target="_blank" rel="noopener noreferrer" />
           ),
-          input: ({ type, checked, ...props }) => {
-            const lineNum = (props as any)['data-line'];
+          input: (props) => {
+            const { type, checked, node } = props;
+            const lineNum = (props as any)['data-line'] || (node?.properties as any)?.['data-line'];
             
             if (type === 'checkbox') {
-              console.log(`[Checkbox Debug] UI Checkbox: line ${lineNum}, checked ${checked}`);
+              console.log(`[Checkbox Debug] UI Checkbox: line=${lineNum}, checked=${checked}, rawProps:`, props);
               
               return (
                 <input
                   type="checkbox"
-                  checked={checked}
+                  checked={Boolean(checked)}
                   disabled={false}
                   onChange={(e) => { 
-                      if (lineNum) handleCheckboxAtLine(Number(lineNum), e.target.checked); 
+                      const targetLine = lineNum || (node?.properties as any)?.['data-line'];
+                      console.log(`[Checkbox Debug] Clicked! Target line: ${targetLine}`);
+                      if (targetLine) handleCheckboxAtLine(Number(targetLine), e.target.checked); 
                   }}
                   className="cursor-pointer accent-primary align-middle mx-1 w-4 h-4"
                 />

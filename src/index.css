@@ -98,6 +98,17 @@
     background-color: hsl(var(--muted)/0.3) !important; 
 }
 
+/* إصلاح لون مؤشر الكتابة (Caret) في المظهر الداكن */
+.dark .cm-cursor, 
+.dark .cm-dropCursor {
+    border-left: 2px solid white !important;
+}
+
+/* التأكد من وضوح النص في المحرر في الوضع المظلم */
+.dark .cm-content {
+    caret-color: white !important;
+}
+
 /* ============================================
    Markdown Preview Enhancements
    ============================================ */
