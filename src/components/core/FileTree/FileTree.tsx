@@ -51,9 +51,11 @@ export function FileTree() {
 
   if (!rootHandle) {
     return (
-      <div className="flex flex-col items-center justify-center p-4 h-full text-center gap-3">
-        <div className="text-4xl mb-2">📝</div>
-        <h3 className="font-semibold text-foreground">مرحباً بك في نسق</h3>
+      <div className="flex flex-col items-center justify-center p-4 h-full text-center gap-4">
+        <div className="w-16 h-16 rounded-2xl overflow-hidden border border-primary/20 bg-background/50 p-1 shadow-md mb-2 animate-pulse">
+           <img src="/pwa-192x192.png" alt="Nasaq Logo" className="w-full h-full object-contain" />
+        </div>
+        <h3 className="font-bold text-foreground font-cairo text-lg">مرحباً بك في نسق</h3>
         <p className="text-muted-foreground text-sm mb-2">ابدأ بفتح ملف أو مجلد</p>
         
         <div className="flex flex-col gap-2 w-full max-w-[180px]">
