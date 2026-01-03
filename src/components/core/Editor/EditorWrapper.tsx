@@ -190,11 +190,10 @@ export function EditorWrapper() {
   // ========== [جديد] مزامنة المحرر مع التغييرات الخارجية (من المعاينة) ==========
   const lastExternalContentRef = useRef<string>(content);
   useEffect(() => {
-    // إذا تغير content في الـ Store ولم يكن التغيير من المحرر نفسه
     if (content !== lastExternalContentRef.current && !isExternalUpdateRef.current) {
-      // التحقق من أن المحتوى الحالي للمحرر مختلف عن الجديد
       const editorCurrentContent = viewRef.current?.state.doc.toString() || '';
       if (editorCurrentContent !== content) {
+        console.log(`[Editor Debug] External update detected. Syncing editor view.`);
         updateEditorContent(content);
       }
       lastExternalContentRef.current = content;

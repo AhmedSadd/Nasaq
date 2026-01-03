@@ -33,11 +33,26 @@ const sanitizeSchema = {
   },
   attributes: {
     ...defaultSchema.attributes,
-    '*': [...(defaultSchema.attributes?.['*'] || []), 'className', 'dir', 'translate', 'align'],
+    '*': [...(defaultSchema.attributes?.['*'] || []), 'className', 'dir', 'translate', 'align', 'data-line'],
     'img': [...(defaultSchema.attributes?.['img'] || []), 'src', 'alt', 'title', 'width', 'height'],
-    'input': ['type', 'checked', 'className', 'onChange'], 
+    'input': ['type', 'checked', 'className', 'onChange', 'data-line'], 
   }
 }
+
+/**
+ * Plugin بسيط لحفظ رقم السطر قبل أن يحذفه التطهير (Sanitize)
+ */
+const rehypePreserveLines = () => (tree: any) => {
+    const walk = (node: any) => {
+        if (node.type === 'element' && node.tagName === 'input' && node.properties?.type === 'checkbox') {
+            if (node.position?.start?.line) {
+                node.properties['data-line'] = node.position.start.line;
+            }
+        }
+        if (node.children) node.children.forEach(walk);
+    };
+    walk(tree);
+};
 
 function CopyButton({ text }: { text: string }) {
   const [isCopied, setIsCopied] = useState(false)
@@ -70,8 +85,7 @@ export function MarkdownPreview() {
   const [hasBlockedImages, setHasBlockedImages] = useState(false);
   const previewRef = useRef<HTMLDivElement>(null)
   const isScrollingByMeRef = useRef(false)
-  // عداد للمربعات التفاعلية - يتم إعادة تعيينه عند كل Render
-  const checkboxIndexRef = useRef(0);
+
 
   const dir = directionMode === 'auto' ? 'auto' : directionMode
 
@@ -150,25 +164,41 @@ export function MarkdownPreview() {
     return () => {};
   }, [content, currentFile, rootHandle]);
 
-  // ========== نهج جديد: تعديل المربع بناءً على ترتيبه ==========
-  const handleCheckboxByIndex = useCallback((checkboxIndex: number, checked: boolean) => {
-    // نمط البحث عن مربعات المهام مع دعم المسافات البادئة:
-    // مسافات بادئة (اختياري) + علامة القائمة + مسافة + [ ] أو [x] أو [X]
-    const checkboxPattern = /^(\s*[-*+]\s+)\[([xX ])\]/gm;
+  const handleCheckboxAtLine = useCallback((lineNum: number, checked: boolean) => {
+    console.log(`[Checkbox Debug] Target Line: ${lineNum}, New Status: ${checked}`);
     
-    let currentIndex = 0;
-    const newContent = content.replace(checkboxPattern, (match, prefix, _state) => {
-      if (currentIndex === checkboxIndex) {
-        currentIndex++;
-        // نحافظ على بادئة السطر الأصلية ونغير فقط حالة المربع
-        return `${prefix}[${checked ? 'x' : ' '}]`;
-      }
-      currentIndex++;
-      return match;
-    });
+    // التعامل مع فواصل الأسطر المختلفة
+    const lines = content.split(/\r?\n/);
+    const lineIndex = lineNum - 1;
+    let targetIdx = -1;
+    
+    // البحث عن أقرب سطر يحتوي على مربع (تسامح 3 أسطر)
+    const listRegex = /^\s*[-*+]\s+\[([ xX])\]/;
+    
+    for (let offset = 0; offset <= 3; offset++) {
+        for (let sign of [1, -1]) {
+            if (offset === 0 && sign === -1) continue;
+            const idx = lineIndex + (offset * sign);
+            if (idx >= 0 && idx < lines.length && listRegex.test(lines[idx])) {
+                targetIdx = idx;
+                break;
+            }
+        }
+        if (targetIdx !== -1) break;
+    }
 
-    if (newContent !== content) {
-      setContent(newContent);
+    if (targetIdx !== -1) {
+      console.log(`[Checkbox Debug] Found task at content line ${targetIdx + 1}`);
+      const line = lines[targetIdx];
+      const newLine = line.replace(/\[([ xX])\]/, `[${checked ? 'x' : ' '}]`); // استبدال أول ظهور
+      
+      if (newLine !== line) {
+        lines[targetIdx] = newLine;
+        setContent(lines.join('\n'));
+        console.log(`[Checkbox Debug] Content updated at line ${targetIdx + 1}`);
+      }
+    } else {
+        console.error(`[Checkbox Debug] ERROR: Could not find task pattern near line ${lineNum}`);
     }
   }, [content, setContent]);
 
@@ -196,8 +226,7 @@ export function MarkdownPreview() {
     return () => element.removeEventListener('scroll', handleScroll);
   }, [syncScrollEnabled]);
 
-  // إعادة تعيين العداد قبل كل Render
-  checkboxIndexRef.current = 0;
+
 
   return (
     <div className="h-full flex flex-col relative">
@@ -224,7 +253,8 @@ export function MarkdownPreview() {
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[
-          [rehypeRaw], 
+          rehypePreserveLines, // يحفظ السطر قبل التطهير
+          rehypeRaw, 
           [rehypeSanitize, sanitizeSchema],
           rehypeHighlight, 
           rehypeSlug
@@ -234,10 +264,10 @@ export function MarkdownPreview() {
             <a {...props} target="_blank" rel="noopener noreferrer" />
           ),
           input: ({ type, checked, ...props }) => {
+            const lineNum = (props as any)['data-line'];
+            
             if (type === 'checkbox') {
-              // الحصول على الترتيب الحالي للمربع وزيادته
-              const currentCheckboxIndex = checkboxIndexRef.current;
-              checkboxIndexRef.current++;
+              console.log(`[Checkbox Debug] UI Checkbox: line ${lineNum}, checked ${checked}`);
               
               return (
                 <input
@@ -245,7 +275,7 @@ export function MarkdownPreview() {
                   checked={checked}
                   disabled={false}
                   onChange={(e) => { 
-                      handleCheckboxByIndex(currentCheckboxIndex, e.target.checked); 
+                      if (lineNum) handleCheckboxAtLine(Number(lineNum), e.target.checked); 
                   }}
                   className="cursor-pointer accent-primary align-middle mx-1 w-4 h-4"
                 />
