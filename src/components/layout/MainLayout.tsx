@@ -195,7 +195,7 @@ export function MainLayout() {
         <header className="h-12 border-b flex items-center justify-between px-4 shrink-0 bg-secondary/20 backdrop-blur-md">
           <div className="flex items-center gap-3">
              <div className="w-8 h-8 rounded-lg overflow-hidden border border-primary/20 bg-background/50 p-0.5 shadow-sm">
-                <img src="/pwa-192x192.png" alt="Nasaq Logo" className="w-full h-full object-contain" />
+                <img src="./pwa-192x192.png" alt="Nasaq Logo" className="w-full h-full object-contain" />
              </div>
              <span className="font-bold font-cairo text-lg text-primary tracking-wider">Nasaq</span>
           </div>
