@@ -33,42 +33,28 @@ const sanitizeSchema = {
   },
   attributes: {
     ...defaultSchema.attributes,
-    '*': [...(defaultSchema.attributes?.['*'] || []), 'className', 'dir', 'translate', 'align', 'data-line'],
+    '*': [...(defaultSchema.attributes?.['*'] || []), 'className', 'dir', 'translate', 'align', 'data-line', 'title'],
     'img': [...(defaultSchema.attributes?.['img'] || []), 'src', 'alt', 'title', 'width', 'height'],
-    'input': ['type', 'checked', 'className', 'onChange', 'data-line'], 
+    'input': ['type', 'checked', 'className', 'onChange', 'data-line', 'title', 'disabled'], 
   }
 }
 
 /**
- * Plugin يعمل في مرحلة Remark (Markdown AST)
- * يقوم بحقن رقم السطر لكل عنصر قائمة يحتوي على مربع اختيار
+ * Plugin يحفظ رقم السطر في الـ HTML كـ Class
  */
-const remarkPreserveLines = () => (tree: any) => {
-    const walk = (node: any) => {
-        if (node.type === 'listItem' && node.checked !== null) {
-            if (!node.data) node.data = {};
-            if (!node.data.hProperties) node.data.hProperties = {};
-            node.data.hProperties['data-line'] = node.position?.start?.line;
-        }
-        if (node.children) node.children.forEach(walk);
-    };
-    walk(tree);
-};
-
-/**
- * Plugin يعمل في مرحلة Rehype (HTML AST)
- * يقوم بنقل data-line من الـ LI إلى الـ INPUT (checkbox)
- */
-const rehypeTransferLineToInput = () => (tree: any) => {
-    const walk = (node: any) => {
-        if (node.type === 'element' && node.tagName === 'li' && node.properties?.['data-line']) {
-            const line = node.properties['data-line'];
-            const input = node.children?.find((c: any) => c.tagName === 'input' && c.properties?.type === 'checkbox');
-            if (input) {
-                input.properties['data-line'] = line;
+const rehypeTaskLines = () => (tree: any) => {
+    const walk = (node: any, parent: any = null) => {
+        if (node.type === 'element' && node.tagName === 'input' && node.properties?.type === 'checkbox') {
+            const line = node.position?.start?.line || parent?.position?.start?.line;
+            if (line) {
+                // نضع السطر في الـ class لضمان بقائه بعد التطهير
+                node.properties.className = [
+                    ...(node.properties.className || []),
+                    `task-line-${line}`
+                ];
             }
         }
-        if (node.children) node.children.forEach(walk);
+        if (node.children) node.children.forEach((c: any) => walk(c, node));
     };
     walk(tree);
 };
@@ -270,9 +256,9 @@ export function MarkdownPreview() {
       onMouseLeave={() => { isScrollingByMeRef.current = false }}
     >
       <ReactMarkdown
-        remarkPlugins={[remarkGfm, remarkPreserveLines]}
+        remarkPlugins={[remarkGfm]}
         rehypePlugins={[
-          rehypeTransferLineToInput,
+          rehypeTaskLines, // يضيف رقم السطر للفئة
           rehypeRaw, 
           [rehypeSanitize, sanitizeSchema],
           rehypeHighlight, 
@@ -283,21 +269,22 @@ export function MarkdownPreview() {
             <a {...props} target="_blank" rel="noopener noreferrer" />
           ),
           input: (props) => {
-            const { type, checked, node } = props;
-            const lineNum = (props as any)['data-line'] || (node?.properties as any)?.['data-line'];
+            const { type, checked, className } = props;
+            
+            // استخراج رقم السطر من الـ class (مثلاً task-line-25)
+            const classStr = Array.isArray(className) ? className.join(' ') : String(className || '');
+            const lineMatch = classStr.match(/task-line-(\d+)/);
+            const lineNum = lineMatch ? Number(lineMatch[1]) : null;
             
             if (type === 'checkbox') {
-              console.log(`[Checkbox Debug] UI Checkbox: line=${lineNum}, checked=${checked}, rawProps:`, props);
-              
               return (
                 <input
                   type="checkbox"
                   checked={Boolean(checked)}
                   disabled={false}
+                  title={`Task at line ${lineNum || 'unknown'}`}
                   onChange={(e) => { 
-                      const targetLine = lineNum || (node?.properties as any)?.['data-line'];
-                      console.log(`[Checkbox Debug] Clicked! Target line: ${targetLine}`);
-                      if (targetLine) handleCheckboxAtLine(Number(targetLine), e.target.checked); 
+                      if (lineNum) handleCheckboxAtLine(lineNum, e.target.checked); 
                   }}
                   className="cursor-pointer accent-primary align-middle mx-1 w-4 h-4"
                 />

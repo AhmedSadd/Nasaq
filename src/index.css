@@ -66,6 +66,8 @@
   body {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
   }
 }
 
@@ -86,6 +88,17 @@
   }
 }
 
+/* Compatibility & Professional Polish */
+.backdrop-blur {
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
+.select-none {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
 /* CodeMirror Fixes */
 .cm-editor {
     height: 100%;
@@ -98,15 +111,19 @@
     background-color: hsl(var(--muted)/0.3) !important; 
 }
 
-/* إصلاح لون مؤشر الكتابة (Caret) في المظهر الداكن */
-.dark .cm-cursor, 
-.dark .cm-dropCursor {
-    border-left: 2px solid white !important;
+/* إصلاح لون مؤشر الكتابة (Caret) ليتناسب مع السمة النشطة */
+.cm-cursor, 
+.cm-dropCursor {
+    border-left: 2px solid hsl(var(--foreground)) !important;
 }
 
-/* التأكد من وضوح النص في المحرر في الوضع المظلم */
-.dark .cm-content {
-    caret-color: white !important;
+.cm-content {
+    caret-color: hsl(var(--foreground)) !important;
+}
+
+/* لون التحديد (Selection) */
+.cm-selectionBackground, .cm-focused .cm-selectionBackground {
+    background-color: hsl(var(--primary)/0.2) !important;
 }
 
 /* ============================================

@@ -109,12 +109,6 @@ export function EditorWrapper() {
         }
       }),
       directionCompartment.of(getDirectionExtension(directionMode)),
-      // إجبار لون مؤشر الكتابة (Cursor) على الوضوح في المظهر الداكن
-      EditorView.baseTheme({
-        "&.cm-focused .cm-cursor": { borderLeftColor: "white" },
-        "&.cm-focused .cm-selectionBackground, ::selection": { backgroundColor: "#3e4451" },
-        ".cm-content": { caretColor: "white" }
-      }),
     ];
 
     const state = EditorState.create({
