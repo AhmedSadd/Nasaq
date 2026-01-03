@@ -290,7 +290,7 @@ export function MarkdownPreview() {
                 />
               );
             }
-            return <input type={type} checked={checked} {...props} />;
+            return <input type={type} checked={checked} title={type || 'input'} {...props} />;
           },
           img: ({ src, alt, ...props }) => {
             const displaySrc = (src && localImageUrls[src]) ? localImageUrls[src] : src;

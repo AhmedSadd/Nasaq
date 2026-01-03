@@ -222,6 +222,8 @@ export function MainLayout() {
           direction="horizontal"
           id="nasaq-layout-persistence"
           className="h-full w-full"
+          role="region"
+          aria-label="Main Workspace"
         >
           {/* File Explorer - hidden in Zen Mode */}
           {!isZenMode && (
