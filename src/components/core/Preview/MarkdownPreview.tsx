@@ -172,12 +172,19 @@ export function MarkdownPreview() {
     const lineIndex = lineNum - 1;
     let targetIdx = -1;
     
-    for (let offset = 0; offset <= 3; offset++) {
+    // توسيع مجال البحث ليشمل الأسطر المتداخلة بدقة
+    // نبحث عن نمط: مسافة بادئة (اختياري) + علامة القائمة (- أو * أو +) + مسافة + [ ] أو [x]
+    const listRegex = /^(\s*)[-*+]\s+\[([ xX])\]/;
+    
+    for (let offset = 0; offset <= 5; offset++) { // زيادة التسامح لـ 5 أسطر
         for (let sign of [1, -1]) {
+            if (offset === 0 && sign === -1) continue; // تجنب تكرار الصفر
             const idx = lineIndex + (offset * sign);
-            if (idx >= 0 && idx < lines.length && /^\s*[-*+]?\s*\[([ xX])\]/.test(lines[idx])) {
-                targetIdx = idx;
-                break;
+            if (idx >= 0 && idx < lines.length) {
+                if (listRegex.test(lines[idx])) {
+                    targetIdx = idx;
+                    break;
+                }
             }
         }
         if (targetIdx !== -1) break;
@@ -256,11 +263,16 @@ export function MarkdownPreview() {
               const lineNum = (node as any)?.position?.start.line;
               return (
                 <input
+                  {...props} 
                   type="checkbox"
                   checked={checked}
-                  onChange={(e) => { if (lineNum) handleCheckboxAtLine(lineNum, e.target.checked); }}
-                  className="cursor-pointer accent-primary"
-                  {...props}
+                  disabled={false} // Force enable
+                  readOnly={false} // Force editable
+                  onChange={(e) => { 
+                      // e.stopPropagation(); // ربما يساعد في منع التداخل
+                      if (lineNum) handleCheckboxAtLine(lineNum, e.target.checked); 
+                  }}
+                  className="cursor-pointer accent-primary align-middle mx-1 w-4 h-4"
                 />
               );
             }
