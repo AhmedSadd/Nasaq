@@ -64,19 +64,16 @@ export function MarkdownPreview() {
   const currentFile = useAppStore((state) => state.currentFile)
   const rootHandle = useAppStore((state) => state.rootHandle)
 
-  
-  // دالة لفتح المجلد (نحتاج استيرادها من Hook أو تمريرها، لكن هنا سنستخدم Hook مباشر للسرعة أو نطلبها من الـ Parent)
-  // الحل الأسهل: استخدام useFileSystem مرة أخرى هنا أو استدعاء دالة من الـ Store إذا كانت مخزنة (هي ليست في الـ Store حالياً كدالة)
-  // لذلك سنقوم باستيراد useFileSystem 
   const { openDirectory } = useHooksFileSystem(); 
   
   const [localImageUrls, setLocalImageUrls] = useState<Record<string, string>>({})
   const [hasBlockedImages, setHasBlockedImages] = useState(false);
   const previewRef = useRef<HTMLDivElement>(null)
   const isScrollingByMeRef = useRef(false)
+  // عداد للمربعات التفاعلية - يتم إعادة تعيينه عند كل Render
+  const checkboxIndexRef = useRef(0);
 
   const dir = directionMode === 'auto' ? 'auto' : directionMode
-
 
   // دالة لمعالجة المسارات (Path Resolver)
   const resolvePath = (basePath: string, relativePath: string) => {
@@ -98,7 +95,6 @@ export function MarkdownPreview() {
   useEffect(() => {
     if (!currentFile || !rootHandle) return;
     
-    // استخراج مسارات الصور
     const imgMatches = Array.from(content.matchAll(/!\[.*?\]\((?!https?:\/\/)(.*?)\)/g));
     const localPaths = Array.from(new Set(imgMatches.map(m => m[1])));
     
@@ -111,27 +107,19 @@ export function MarkdownPreview() {
 
     if (localPaths.length === 0) return;
 
-    // المسار "الافتراضي" للمجلد الحالي بناءً على موقع الملف المفتوح
-    // currentFile format: Root/Folder/File.md
     const currentFileParts = currentFile.replace(/\\/g, '/').split('/');
-    currentFileParts.shift(); // Remove root name
-    currentFileParts.pop();   // Remove filename
-    const currentDirPath = currentFileParts.join('/'); // Path relative to root, e.g. "docs"
+    currentFileParts.shift();
+    currentFileParts.pop();
+    const currentDirPath = currentFileParts.join('/');
 
     localPaths.forEach(async (relPath) => {
         if (localImageUrls[relPath]) return;
         
-        // تنظيف المسار النسبي القادم من الماركدوان
-        // ./assets/img.png -> assets/img.png
-        // ../img.png -> ../img.png
         const rawRelPath = relPath.trim().replace(/\\/g, '/');
-        
-        // حل المسار النهائي نسبةً للروت
         const resolvedPathFromRoot = resolvePath(currentDirPath, rawRelPath);
         
         let targetHandle: FileSystemFileHandle | undefined;
 
-        // محاولة الوصول للملف عبر التتبع من الروت (Traversal)
         try {
             const pathParts = resolvedPathFromRoot.split('/').filter(Boolean);
             let currentDirHandle = rootHandle;
@@ -139,10 +127,8 @@ export function MarkdownPreview() {
             for (let i = 0; i < pathParts.length; i++) {
                 const part = pathParts[i];
                 if (i === pathParts.length - 1) {
-                    // وصلنا للملف
                     targetHandle = await currentDirHandle.getFileHandle(part);
                 } else {
-                    // نحن في مجلد
                     currentDirHandle = await currentDirHandle.getDirectoryHandle(part);
                 }
             }
@@ -161,48 +147,26 @@ export function MarkdownPreview() {
         }
     });
 
-    return () => {
-        // تنظيف الروابط
-        // Object.values(localImageUrls).forEach(URL.revokeObjectURL); // Be careful not to revoke too early if re-rendering
-    };
+    return () => {};
   }, [content, currentFile, rootHandle]);
 
-  const handleCheckboxAtLine = useCallback((lineNum: number, checked: boolean) => {
-    // 1. Split safely handling CRLF and LF
-    const lines = content.split(/\r?\n/);
-    const lineIndex = lineNum - 1;
-    let targetIdx = -1;
+  // ========== نهج جديد: تعديل المربع بناءً على ترتيبه ==========
+  const handleCheckboxByIndex = useCallback((checkboxIndex: number, checked: boolean) => {
+    // نمط البحث عن مربعات المهام: - [ ] أو - [x] أو * [ ] إلخ
+    const checkboxPattern = /([-*+]\s+)\[([xX ])\]/g;
     
-    // 2. Simplified Check: Just look for task list pattern around the index
-    // Pattern: Start of line -> whitespace -> marker -> space -> [ ] or [x]
-    const listRegex = /^\s*[-*+]\s+\[([ xX])\]/;
-    
-    for (let offset = 0; offset <= 3; offset++) {
-        for (let sign of [1, -1]) {
-            if (offset === 0 && sign === -1) continue;
-            const idx = lineIndex + (offset * sign);
-            
-            if (idx >= 0 && idx < lines.length) {
-                if (listRegex.test(lines[idx])) {
-                    targetIdx = idx;
-                    break;
-                }
-            }
-        }
-        if (targetIdx !== -1) break;
-    }
-
-    if (targetIdx !== -1) {
-      const line = lines[targetIdx];
-      // 3. Precise Replacement: Only replace the first occurrence of the checkbox pattern
-      // We reconstruct the line to be safe
-      const newLine = line.replace(/(\[[ xX]\])/, `[${checked ? 'x' : ' '}]`);
-      
-      if (newLine !== line) {
-        lines[targetIdx] = newLine;
-        // 4. Join with \n (standardize line endings)
-        setContent(lines.join('\n'));
+    let currentIndex = 0;
+    const newContent = content.replace(checkboxPattern, (match, prefix, _state) => {
+      if (currentIndex === checkboxIndex) {
+        currentIndex++;
+        return `${prefix}[${checked ? 'x' : ' '}]`;
       }
+      currentIndex++;
+      return match;
+    });
+
+    if (newContent !== content) {
+      setContent(newContent);
     }
   }, [content, setContent]);
 
@@ -229,6 +193,9 @@ export function MarkdownPreview() {
     element.addEventListener('scroll', handleScroll, { passive: true });
     return () => element.removeEventListener('scroll', handleScroll);
   }, [syncScrollEnabled]);
+
+  // إعادة تعيين العداد قبل كل Render
+  checkboxIndexRef.current = 0;
 
   return (
     <div className="h-full flex flex-col relative">
@@ -264,19 +231,19 @@ export function MarkdownPreview() {
           a: ({ ...props }) => (
             <a {...props} target="_blank" rel="noopener noreferrer" />
           ),
-          input: ({ type, checked, node, ...props }) => {
+          input: ({ type, checked, ...props }) => {
             if (type === 'checkbox') {
-              const lineNum = (node as any)?.position?.start.line;
+              // الحصول على الترتيب الحالي للمربع وزيادته
+              const currentCheckboxIndex = checkboxIndexRef.current;
+              checkboxIndexRef.current++;
+              
               return (
                 <input
-                  {...props} 
                   type="checkbox"
                   checked={checked}
-                  disabled={false} // Force enable
-                  readOnly={false} // Force editable
+                  disabled={false}
                   onChange={(e) => { 
-                      // e.stopPropagation(); // ربما يساعد في منع التداخل
-                      if (lineNum) handleCheckboxAtLine(lineNum, e.target.checked); 
+                      handleCheckboxByIndex(currentCheckboxIndex, e.target.checked); 
                   }}
                   className="cursor-pointer accent-primary align-middle mx-1 w-4 h-4"
                 />
