@@ -168,18 +168,20 @@ export function MarkdownPreview() {
   }, [content, currentFile, rootHandle]);
 
   const handleCheckboxAtLine = useCallback((lineNum: number, checked: boolean) => {
-    const lines = content.split('\n');
+    // 1. Split safely handling CRLF and LF
+    const lines = content.split(/\r?\n/);
     const lineIndex = lineNum - 1;
     let targetIdx = -1;
     
-    // توسيع مجال البحث ليشمل الأسطر المتداخلة بدقة
-    // نبحث عن نمط: مسافة بادئة (اختياري) + علامة القائمة (- أو * أو +) + مسافة + [ ] أو [x]
-    const listRegex = /^(\s*)[-*+]\s+\[([ xX])\]/;
+    // 2. Simplified Check: Just look for task list pattern around the index
+    // Pattern: Start of line -> whitespace -> marker -> space -> [ ] or [x]
+    const listRegex = /^\s*[-*+]\s+\[([ xX])\]/;
     
-    for (let offset = 0; offset <= 5; offset++) { // زيادة التسامح لـ 5 أسطر
+    for (let offset = 0; offset <= 3; offset++) {
         for (let sign of [1, -1]) {
-            if (offset === 0 && sign === -1) continue; // تجنب تكرار الصفر
+            if (offset === 0 && sign === -1) continue;
             const idx = lineIndex + (offset * sign);
+            
             if (idx >= 0 && idx < lines.length) {
                 if (listRegex.test(lines[idx])) {
                     targetIdx = idx;
@@ -192,9 +194,13 @@ export function MarkdownPreview() {
 
     if (targetIdx !== -1) {
       const line = lines[targetIdx];
-      const newLine = line.replace(/\[([ xX])\]/, `[${checked ? 'x' : ' '}]`);
+      // 3. Precise Replacement: Only replace the first occurrence of the checkbox pattern
+      // We reconstruct the line to be safe
+      const newLine = line.replace(/(\[[ xX]\])/, `[${checked ? 'x' : ' '}]`);
+      
       if (newLine !== line) {
         lines[targetIdx] = newLine;
+        // 4. Join with \n (standardize line endings)
         setContent(lines.join('\n'));
       }
     }
