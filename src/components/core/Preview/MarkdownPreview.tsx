@@ -280,6 +280,8 @@ export function MarkdownPreview() {
               return (
                 <input
                   type="checkbox"
+                  id={`task-check-${lineNum}`}
+                  name={`task-line-${lineNum}`}
                   checked={Boolean(checked)}
                   disabled={false}
                   title={`Task at line ${lineNum || 'unknown'}`}

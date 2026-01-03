@@ -217,13 +217,11 @@ export function MainLayout() {
       )}
 
       {/* Main Workspace */}
-      <div className="flex-1 overflow-hidden">
+      <main role="main" aria-label="Nasaq Editor Workspace" className="flex-1 overflow-hidden">
         <ResizablePanelGroup
           direction="horizontal"
           id="nasaq-layout-persistence"
           className="h-full w-full"
-          role="region"
-          aria-label="Main Workspace"
         >
           {/* File Explorer - hidden in Zen Mode */}
           {!isZenMode && (
@@ -253,7 +251,7 @@ export function MainLayout() {
             <MarkdownPreview />
           </ResizablePanel>
         </ResizablePanelGroup>
-      </div>
+      </main>
       
       {/* شريط الحالة - يظهر فقط خارج وضع التركيز */}
       {!isZenMode && <StatusBar />}

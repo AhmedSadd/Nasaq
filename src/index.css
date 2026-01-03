@@ -66,8 +66,10 @@
   body {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
+    /* التوافقية الكاملة لتغيير حجم النص */
     -webkit-text-size-adjust: 100%;
     -moz-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
     text-size-adjust: 100%;
   }
 }
@@ -103,7 +105,25 @@
 
 .select-none {
   -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
   user-select: none;
+}
+
+/* حل تحذيرات الـ Mask وتوافقية المتصفحات القديمة */
+.mask-image {
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+
+.mask-repeat {
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
+.mask-position {
+  -webkit-mask-position: center;
+  mask-position: center;
 }
 
 /* CodeMirror Fixes */
