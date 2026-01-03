@@ -26,11 +26,11 @@ dist-ssr
 # Project Specific
 .env
 .env.*
+docs/*
 docs/auto_generated/
 docs/ملف للتجربة.md
 docs/test-features.md
 docs/logo.jpg
-docs/
 # OS
 .DS_Store
 Thumbs.db
